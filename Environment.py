@@ -5,9 +5,9 @@ class Environment:
         self.size = size
         self.matrix = [[0] * size for _ in range(size)] # not shared across instances
         self.__set_dirt()
-        self.position = {'x': 0, 'y': 0}
+        self.position = {'x': 0, 'y': 0} # current position
 
-    # private method
+    # private method that sets random spots of dirt in the environment
     def __set_dirt(self):
         dice = random.randint(0, self.size * self.size)
 
@@ -16,15 +16,19 @@ class Environment:
             rand_room = random.randint(0, self.size - 1)
             self.matrix[rand_row][rand_room] = 1
 
-    # verifies if room is dirty
-    def is_dirty(self, x, y):
-        return self.matrix[x][y] == 1
-
-    # # agent cleans a room
-    def clean(self, new_x, new_y):
-        self.matrix[new_x][new_y] = 0
+    def set_position(self, new_x, new_y):
         self.position['x'] = new_x
         self.position['y'] = new_y
+
+    # verifies if room is dirty
+    def is_dirty(self):
+        x, y = self.position['x'], self.position['y']
+        return self.matrix[x][y] == 1
+
+    # agent cleans a room
+    def clean(self):
+        x, y = self.position['x'], self.position['y']
+        self.matrix[x][y] = 0
 
     # Verifies if all the rooms are clean
     def all_clean(self):
@@ -38,4 +42,5 @@ class Environment:
     # display rooms in environment
     def display(self):
         for row in self.matrix:
-            print(row)
+            print("     ".join(str(cell) for cell in row))
+        print()
